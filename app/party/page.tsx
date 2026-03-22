@@ -1,4 +1,4 @@
-import { questions } from "../../lib/questions";
+import questions from "../../lib/questions";
 
 export default function PartyPage() {
   return (
