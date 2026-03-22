@@ -2,7 +2,6 @@
 
 "use client";
 
-
 import { useRouter } from "next/navigation";
 
 const PARTY_MODE = false; // 나중에 true로 바꾸면 /party로 감
