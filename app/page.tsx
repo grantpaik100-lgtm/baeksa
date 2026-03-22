@@ -21,7 +21,7 @@ export default function HomePage() {
     <main className="relative h-screen w-screen overflow-hidden">
       {/* 포스터 이미지 */}
       <img
-        src="/poster.jpg" // ← public 폴더에 넣어야 함
+        src="/baeksa-invite.jpeg" // ← public 폴더에 넣어야 함
         alt="BAEKSA Poster"
         className="absolute inset-0 h-full w-full object-cover"
       />
