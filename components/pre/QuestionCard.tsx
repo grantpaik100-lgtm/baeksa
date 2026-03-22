@@ -61,15 +61,21 @@ type Props = {
   onPrev: () => void;
   isFirst: boolean;
   isLast: boolean;
+  canGoNext: boolean;
 };
 
 const inputBase =
-  "w-full rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-4 text-sm text-white/90 outline-none placeholder:text-white/30 focus:border-white/25";
+  "w-full rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-4 text-sm text-white/90 outline-none placeholder:text-white/28 transition focus:border-white/25 focus:bg-white/[0.06]";
+
 const optionBase =
   "w-full rounded-2xl border px-4 py-4 text-left text-sm transition";
+
 const optionIdle =
   "border-white/10 bg-white/[0.03] text-white/80 hover:border-white/20 hover:bg-white/[0.05]";
+
 const optionActive = "border-white/40 bg-white/10 text-white";
+
+const labelBase = "mb-3 text-sm text-white/84";
 
 export default function QuestionCard({
   question,
@@ -79,13 +85,14 @@ export default function QuestionCard({
   onPrev,
   isFirst,
   isLast,
+  canGoNext,
 }: Props) {
   const renderBody = () => {
     if (question.type === "double-input") {
       return (
-        <div className="space-y-4">
+        <div className="space-y-5">
           <div>
-            <p className="mb-3 text-sm text-white/85">{question.title}</p>
+            <p className={labelBase}>{question.title}</p>
             <input
               className={inputBase}
               value={answers.name ?? ""}
@@ -95,12 +102,13 @@ export default function QuestionCard({
           </div>
 
           <div>
-            <p className="mb-3 text-sm text-white/85">{question.subtitle}</p>
+            <p className={labelBase}>{question.subtitle}</p>
             <input
               className={inputBase}
               value={answers.phone ?? ""}
               onChange={(e) => onChange("phone", e.target.value)}
               placeholder="연락처"
+              inputMode="tel"
             />
           </div>
         </div>
@@ -112,7 +120,10 @@ export default function QuestionCard({
 
       return (
         <div>
-          <p className="mb-5 text-base text-white/90">{question.title}</p>
+          <p className="mb-5 text-base leading-relaxed text-white/90">
+            {question.title}
+          </p>
+
           <div className="space-y-3">
             {question.options.map((option) => {
               const active = selected === option;
@@ -136,13 +147,17 @@ export default function QuestionCard({
     if (question.type === "triple-input") {
       return (
         <div>
-          <p className="mb-5 text-base text-white/90">{question.title}</p>
+          <p className="mb-5 text-base leading-relaxed text-white/90">
+            {question.title}
+          </p>
+
           <div className="space-y-3">
             <input
               className={inputBase}
               value={answers.birthYear ?? ""}
               onChange={(e) => onChange("birthYear", e.target.value)}
               placeholder="출생연도"
+              inputMode="numeric"
             />
             <input
               className={inputBase}
@@ -164,7 +179,10 @@ export default function QuestionCard({
     if (question.type === "songs") {
       return (
         <div>
-          <p className="mb-5 text-base text-white/90">{question.title}</p>
+          <p className="mb-5 text-base leading-relaxed text-white/90">
+            {question.title}
+          </p>
+
           <div className="space-y-3">
             <input
               className={inputBase}
@@ -194,6 +212,10 @@ export default function QuestionCard({
 
   return (
     <div className="w-full max-w-xl rounded-[28px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_0_0_1px_rgba(255,255,255,0.02)] backdrop-blur-md md:p-7">
+      <div className="mb-3 text-[11px] tracking-[0.24em] text-white/30">
+        BAEKSA
+      </div>
+
       <div className="mb-8 transition-opacity duration-300 ease-out">
         {renderBody()}
       </div>
@@ -203,7 +225,7 @@ export default function QuestionCard({
           type="button"
           onClick={onPrev}
           disabled={isFirst}
-          className="rounded-full border border-white/10 px-4 py-2 text-xs tracking-[0.2em] text-white/45 transition hover:border-white/20 hover:text-white/70 disabled:opacity-30"
+          className="rounded-full border border-white/10 px-4 py-2 text-xs tracking-[0.2em] text-white/45 transition hover:border-white/20 hover:text-white/70 disabled:cursor-not-allowed disabled:opacity-30"
         >
           BACK
         </button>
@@ -211,7 +233,8 @@ export default function QuestionCard({
         <button
           type="button"
           onClick={onNext}
-          className="rounded-full border border-white/20 bg-white/10 px-5 py-2 text-xs tracking-[0.24em] text-white/90 transition hover:bg-white/15"
+          disabled={!canGoNext}
+          className="rounded-full border border-white/20 bg-white/10 px-5 py-2 text-xs tracking-[0.24em] text-white/90 transition hover:bg-white/15 disabled:cursor-not-allowed disabled:border-white/10 disabled:bg-white/[0.04] disabled:text-white/28"
         >
           {isLast ? "FINISH" : "NEXT"}
         </button>
