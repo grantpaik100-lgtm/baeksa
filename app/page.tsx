@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
 
 export default function HomePage() {
-  redirect("/pre");
+   return <div style={{ color: "white" }}>HOME</div>;
 }
