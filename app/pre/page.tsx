@@ -5,161 +5,194 @@ import Image from "next/image";
 import QuestionCard from "@/components/pre/QuestionCard";
 import { questions } from "@/lib/questions";
 
-type Answers = {
-  name?: string;
-  phone?: string;
-  reason?: string;
-  relationship?: string;
-  approach?: string;
-  groupSize?: string;
-  vibe?: string;
-  energy?: string;
-  trigger?: string;
-  birthYear?: string;
-  instagram?: string;
-  mbti?: string;
-  song1?: string;
-  song2?: string;
-  song3?: string;
-};
-
-const isFilled = (value?: string) => !!value?.trim();
-
 export default function PrePage() {
   const [entered, setEntered] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
-  const [answers, setAnswers] = useState<Answers>({});
+  const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [submitted, setSubmitted] = useState(false);
 
-  const totalSteps = questions.length;
   const currentQuestion = questions[currentStep];
+  const isLastStep = currentStep === questions.length - 1;
 
-  const progress = useMemo(
-    () => ((currentStep + 1) / totalSteps) * 100,
-    [currentStep, totalSteps]
-  );
+  const progress = useMemo(() => {
+    return ((currentStep + 1) / questions.length) * 100;
+  }, [currentStep]);
 
-  const canGoNext = useMemo(() => {
-    if (currentQuestion.type === "double-input") {
-      return isFilled(answers.name) && isFilled(answers.phone);
-    }
+  const isCurrentStepValid = useMemo(() => {
+    if (!currentQuestion) return false;
 
-    if (currentQuestion.type === "single") {
-      return isFilled(answers[currentQuestion.key]);
-    }
+    const value = answers[currentQuestion.id];
 
-    if (currentQuestion.type === "triple-input") {
-      return (
-        isFilled(answers.birthYear) &&
-        isFilled(answers.instagram) &&
-        isFilled(answers.mbti)
-      );
-    }
+    if (!currentQuestion.required) return true;
 
-    if (currentQuestion.type === "songs") {
-      return (
-        isFilled(answers.song1) &&
-        isFilled(answers.song2) &&
-        isFilled(answers.song3)
-      );
-    }
-
-    return false;
+    return typeof value === "string" && value.trim().length > 0;
   }, [answers, currentQuestion]);
 
-  const handleChange = (key: keyof Answers, value: string) => {
-    setAnswers((prev) => ({
-      ...prev,
-      [key]: value,
-    }));
+  const handleEnter = () => {
+    setEntered(true);
+  };
+
+  const handleBack = () => {
+    if (currentStep === 0) return;
+    setCurrentStep((prev) => prev - 1);
   };
 
   const handleNext = () => {
-    if (!canGoNext) return;
+    if (!isCurrentStepValid) return;
+    if (isLastStep) return;
 
-    if (currentStep < totalSteps - 1) {
-      setCurrentStep((prev) => prev + 1);
-    }
+    setCurrentStep((prev) => prev + 1);
   };
 
-  const handlePrev = () => {
-    if (currentStep > 0) {
-      setCurrentStep((prev) => prev - 1);
-    }
+  const handleAnswerChange = (questionId: string, value: string) => {
+    setAnswers((prev) => ({
+      ...prev,
+      [questionId]: value,
+    }));
   };
 
-  if (!entered) {
-    return (
-      <div
-        className="relative h-screen w-full overflow-hidden bg-[#0A0A0A] text-white"
-        onClick={() => setEntered(true)}
-      >
-        <Image
-          src="/images/baeksa-invite.jpeg"
-          alt="BAEKSA invitation poster"
-          fill
-          priority
-          className="object-cover"
-        />
+  const handleSubmit = () => {
+    if (!isCurrentStepValid) return;
 
-        <div className="absolute inset-0 bg-black/35" />
+    console.log("BAEKSA ENTRY ANSWERS:", answers);
+    setSubmitted(true);
+  };
 
-        <div className="absolute inset-0 flex items-center justify-center">
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              setEntered(true);
-            }}
-            className="border border-white/30 bg-white/10 px-8 py-3 text-sm tracking-[0.35em] text-white/90 backdrop-blur-sm"
-          >
-            ENTER
-          </button>
-        </div>
-
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2">
-          <p className="text-[11px] tracking-[0.28em] text-white/60">
-            TAP ANYWHERE TO ENTER
-          </p>
-        </div>
-      </div>
-    );
-  }
+  const handleExit = () => {
+    setEntered(false);
+    setSubmitted(false);
+    setCurrentStep(0);
+    setAnswers({});
+  };
 
   return (
-    <main className="relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-[#0A0A0A] px-4 py-8 text-white">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.06),transparent_32%)]" />
-      <div className="absolute inset-0 bg-black/30" />
-
-      <div className="relative z-10 w-full max-w-xl">
-        <div className="mb-4 flex items-center justify-between">
-          <p className="text-[11px] tracking-[0.28em] text-white/40">
-            ENTRY FORM
-          </p>
-          <p className="text-[11px] tracking-[0.2em] text-white/35">
-            {currentStep + 1} / {totalSteps}
-          </p>
-        </div>
-
-        <div className="mb-8 h-[3px] w-full overflow-hidden rounded-full bg-white/10">
-          <div
-            className="h-full rounded-full bg-white/80 transition-all duration-300 ease-out"
-            style={{ width: `${progress}%` }}
+    <main className="min-h-screen bg-black text-white">
+      {!entered ? (
+        <section className="relative flex min-h-screen items-center justify-center overflow-hidden">
+          <Image
+            src="/images/baeksa-invite.jpeg"
+            alt="BAEKSA invitation poster"
+            fill
+            priority
+            className="object-cover"
           />
-        </div>
 
-        <div key={currentStep} className="animate-[fadeIn_220ms_ease-out]">
-          <QuestionCard
-            question={currentQuestion}
-            answers={answers}
-            onChange={handleChange}
-            onNext={handleNext}
-            onPrev={handlePrev}
-            isFirst={currentStep === 0}
-            isLast={currentStep === totalSteps - 1}
-            canGoNext={canGoNext}
-          />
-        </div>
-      </div>
+          <div className="absolute inset-0 bg-black/45" />
+
+          <div className="relative z-10 flex flex-col items-center justify-center px-6 text-center">
+            <p className="mb-4 text-[10px] tracking-[0.45em] text-white/60 sm:text-xs">
+              PRIVATE INVITATION
+            </p>
+
+            <h1 className="mb-10 text-4xl font-semibold tracking-[0.24em] sm:text-6xl">
+              BAEKSA
+            </h1>
+
+            <button
+              onClick={handleEnter}
+              className="border border-white/30 px-8 py-3 text-sm tracking-[0.35em] transition duration-300 hover:border-white hover:bg-white hover:text-black"
+            >
+              ENTER
+            </button>
+          </div>
+        </section>
+      ) : submitted ? (
+        <section className="flex min-h-screen items-center justify-center px-6">
+          <div className="w-full max-w-2xl text-center">
+            <p className="mb-4 text-[10px] tracking-[0.45em] text-white/45 sm:text-xs">
+              BAEKSA
+            </p>
+
+            <h1 className="text-3xl font-semibold tracking-[0.18em] sm:text-5xl">
+              ENTRY ACCEPTED
+            </h1>
+
+            <div className="mt-6 space-y-2 text-sm tracking-[0.22em] text-white/70 sm:text-base">
+              <p>YOU ARE NOW INSIDE</p>
+              <p>DETAILS WILL BE REVEALED</p>
+            </div>
+
+            <button
+              onClick={handleExit}
+              className="mt-12 border border-white/20 px-8 py-3 text-sm tracking-[0.3em] transition duration-300 hover:border-white hover:bg-white hover:text-black"
+            >
+              EXIT
+            </button>
+          </div>
+        </section>
+      ) : (
+        <section className="flex min-h-screen items-center justify-center px-4 py-10 sm:px-6">
+          <div className="w-full max-w-2xl">
+            <div className="mb-8">
+              <div className="mb-3 flex items-center justify-between text-[11px] tracking-[0.25em] text-white/45">
+                <span>
+                  {String(currentStep + 1).padStart(2, "0")} /{" "}
+                  {String(questions.length).padStart(2, "0")}
+                </span>
+                <span>ENTRY FORM</span>
+              </div>
+
+              <div className="h-[2px] w-full overflow-hidden bg-white/10">
+                <div
+                  className="h-full bg-white transition-all duration-300"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+            </div>
+
+            <div className="animate-[fadeIn_0.35s_ease]">
+              <QuestionCard
+                question={currentQuestion}
+                value={answers[currentQuestion.id] ?? ""}
+                onChange={(value: string) =>
+                  handleAnswerChange(currentQuestion.id, value)
+                }
+              />
+            </div>
+
+            <div className="mt-8 flex items-center justify-between gap-3">
+              <button
+                onClick={handleBack}
+                disabled={currentStep === 0}
+                className="min-w-[110px] border border-white/15 px-5 py-3 text-sm tracking-[0.24em] text-white transition duration-300 disabled:cursor-not-allowed disabled:opacity-30"
+              >
+                BACK
+              </button>
+
+              {isLastStep ? (
+                <button
+                  onClick={handleSubmit}
+                  disabled={!isCurrentStepValid}
+                  className="min-w-[110px] border border-white px-5 py-3 text-sm tracking-[0.24em] text-black bg-white transition duration-300 disabled:cursor-not-allowed disabled:border-white/15 disabled:bg-white/10 disabled:text-white/35"
+                >
+                  FINISH
+                </button>
+              ) : (
+                <button
+                  onClick={handleNext}
+                  disabled={!isCurrentStepValid}
+                  className="min-w-[110px] border border-white px-5 py-3 text-sm tracking-[0.24em] text-black bg-white transition duration-300 disabled:cursor-not-allowed disabled:border-white/15 disabled:bg-white/10 disabled:text-white/35"
+                >
+                  NEXT
+                </button>
+              )}
+            </div>
+          </div>
+        </section>
+      )}
+
+      <style jsx global>{`
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(8px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+      `}</style>
     </main>
   );
 }
