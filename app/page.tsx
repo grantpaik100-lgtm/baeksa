@@ -1,42 +1,22 @@
-// app/page.tsx
+import { questions } from "../../lib/questions";
 
-"use client";
-
-import { useRouter } from "next/navigation";
-
-const PARTY_MODE = false; // 나중에 true로 바꾸면 /party로 감
-
-export default function HomePage() {
-  const router = useRouter();
-
-  const handleEnter = () => {
-    if (PARTY_MODE) {
-      router.push("/party");
-    } else {
-      router.push("/pre");
-    }
-  };
-
+export default function PartyPage() {
   return (
-    <main className="relative h-screen w-screen overflow-hidden">
-      {/* 포스터 이미지 */}
-      <img
-        src="/images/baeksa-invite.jpeg" // ← public 폴더에 넣어야 함
-        alt="BAEKSA Poster"
-        className="absolute inset-0 h-full w-full object-cover"
-      />
+    <main className="min-h-screen bg-black px-6 py-20 text-white">
+      <div className="mx-auto max-w-3xl">
+        <p className="text-xs tracking-[0.3em] text-white/50">BAEKSA — PARTY MODE</p>
+        <h1 className="mt-4 text-3xl">Random Question Page</h1>
 
-      {/* 어두운 오버레이 */}
-      <div className="absolute inset-0 bg-black/40" />
-
-      {/* ENTER 버튼 */}
-      <div className="relative z-10 flex h-full w-full items-center justify-center">
-        <button
-          onClick={handleEnter}
-          className="border border-white px-8 py-3 text-white tracking-[0.3em] hover:bg-white hover:text-black transition"
-        >
-          ENTER
-        </button>
+        <div className="mt-8 space-y-3">
+          {questions.map((q, index) => (
+            <div
+              key={index}
+              className="rounded-2xl border border-white/10 bg-white/5 p-4"
+            >
+              {q}
+            </div>
+          ))}
+        </div>
       </div>
     </main>
   );
