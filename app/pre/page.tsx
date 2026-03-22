@@ -19,14 +19,22 @@ export default function PrePage() {
   }, [currentStep]);
 
   const isCurrentStepValid = useMemo(() => {
-    if (!currentQuestion) return false;
+  if (!currentQuestion) return false;
 
-    const value = answers[currentQuestion.id];
+  if (currentQuestion.type === "double-input") {
+    return currentQuestion.fields.every((field) => {
+      const value = answers[field];
+      return typeof value === "string" && value.trim().length > 0;
+    });
+  }
 
-    if (!currentQuestion.required) return true;
-
+  if ("key" in currentQuestion) {
+    const value = answers[currentQuestion.key];
     return typeof value === "string" && value.trim().length > 0;
-  }, [answers, currentQuestion]);
+  }
+
+  return false;
+}, [answers, currentQuestion]);
 
   const handleEnter = () => {
     setEntered(true);
