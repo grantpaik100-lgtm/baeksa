@@ -23,6 +23,8 @@ type Answers = {
   song3?: string;
 };
 
+const isFilled = (value?: string) => !!value?.trim();
+
 export default function PrePage() {
   const [entered, setEntered] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
@@ -30,10 +32,39 @@ export default function PrePage() {
 
   const totalSteps = questions.length;
   const currentQuestion = questions[currentStep];
+
   const progress = useMemo(
     () => ((currentStep + 1) / totalSteps) * 100,
     [currentStep, totalSteps]
   );
+
+  const canGoNext = useMemo(() => {
+    if (currentQuestion.type === "double-input") {
+      return isFilled(answers.name) && isFilled(answers.phone);
+    }
+
+    if (currentQuestion.type === "single") {
+      return isFilled(answers[currentQuestion.key]);
+    }
+
+    if (currentQuestion.type === "triple-input") {
+      return (
+        isFilled(answers.birthYear) &&
+        isFilled(answers.instagram) &&
+        isFilled(answers.mbti)
+      );
+    }
+
+    if (currentQuestion.type === "songs") {
+      return (
+        isFilled(answers.song1) &&
+        isFilled(answers.song2) &&
+        isFilled(answers.song3)
+      );
+    }
+
+    return false;
+  }, [answers, currentQuestion]);
 
   const handleChange = (key: keyof Answers, value: string) => {
     setAnswers((prev) => ({
@@ -43,6 +74,8 @@ export default function PrePage() {
   };
 
   const handleNext = () => {
+    if (!canGoNext) return;
+
     if (currentStep < totalSteps - 1) {
       setCurrentStep((prev) => prev + 1);
     }
@@ -114,10 +147,7 @@ export default function PrePage() {
           />
         </div>
 
-        <div
-          key={currentStep}
-          className="animate-[fadeIn_220ms_ease-out]"
-        >
+        <div key={currentStep} className="animate-[fadeIn_220ms_ease-out]">
           <QuestionCard
             question={currentQuestion}
             answers={answers}
@@ -126,6 +156,7 @@ export default function PrePage() {
             onPrev={handlePrev}
             isFirst={currentStep === 0}
             isLast={currentStep === totalSteps - 1}
+            canGoNext={canGoNext}
           />
         </div>
       </div>
