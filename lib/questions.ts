@@ -1,21 +1,70 @@
 export const questions = [
-  { id: 0, type: "input", fields: ["name", "phone"] },
-
-  { id: 1, type: "single", key: "reason", options: ["새로운 사람", "기존 지인", "분위기 경험"] },
-
-  { id: 2, type: "single", key: "relationship", options: ["가벼운", "새로운 인연", "단순 경험"] },
-
-  { id: 3, type: "single", key: "approach", options: ["그렇다", "상황에 따라", "그렇지 않다"] },
-
-  { id: 4, type: "single", key: "groupSize", options: ["2–3", "4–6", "7명 이상"] },
-
-  { id: 5, type: "single", key: "vibe", options: ["강함", "중간", "차분"] },
-
-  { id: 6, type: "single", key: "energy", options: ["더 활발", "유지", "조용"] },
-
-  { id: 7, type: "single", key: "trigger", options: ["공통 관심사", "분위기", "개입"] },
-
-  { id: 8, type: "multi-input", fields: ["birthYear", "instagram", "mbti"] },
-
-  { id: 9, type: "songs", key: "songs" },
-];
+  {
+    id: 0,
+    type: "double-input",
+    title: "이름을 입력해주세요",
+    subtitle: "연락 가능한 번호를 입력해주세요",
+    fields: ["name", "phone"],
+  },
+  {
+    id: 1,
+    type: "single",
+    title: "이 자리에 오는 가장 가까운 이유는 무엇인가요?",
+    options: ["새로운 사람", "기존 지인", "분위기 경험"],
+    key: "reason",
+  },
+  {
+    id: 2,
+    type: "single",
+    title: "이번 자리에서 기대하는 관계는 무엇인가요?",
+    options: ["가벼운", "새로운 인연", "단순 경험"],
+    key: "relationship",
+  },
+  {
+    id: 3,
+    type: "single",
+    title: "처음 보는 사람에게 먼저 말을 거는 편인가요?",
+    options: ["그렇다", "상황에 따라", "그렇지 않다"],
+    key: "approach",
+  },
+  {
+    id: 4,
+    type: "single",
+    title: "편하게 느끼는 그룹 크기는?",
+    options: ["2–3", "4–6", "7명 이상"],
+    key: "groupSize",
+  },
+  {
+    id: 5,
+    type: "single",
+    title: "선호 분위기",
+    options: ["강함", "중간", "차분"],
+    key: "vibe",
+  },
+  {
+    id: 6,
+    type: "single",
+    title: "시간이 늦어질수록",
+    options: ["더 활발", "유지", "조용"],
+    key: "energy",
+  },
+  {
+    id: 7,
+    type: "single",
+    title: "대화가 시작되는 순간",
+    options: ["공통 관심사", "분위기", "개입"],
+    key: "trigger",
+  },
+  {
+    id: 8,
+    type: "triple-input",
+    title: "출생연도 / 인스타 / MBTI",
+    fields: ["birthYear", "instagram", "mbti"],
+  },
+  {
+    id: 9,
+    type: "songs",
+    title: "자신을 가장 잘 표현하는 노래 3곡",
+    fields: ["song1", "song2", "song3"],
+  },
+] as const;
