@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { surveySections } from "@/lib/survey";
+import { surveySections } from "../../lib/survey";
 
 type Answers = {
   [key: string]: string | string[];
