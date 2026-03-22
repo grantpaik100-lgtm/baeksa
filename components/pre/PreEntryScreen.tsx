@@ -2,15 +2,24 @@
 
 import Image from "next/image";
 
+type PreEntryScreenProps = {
+  onEnter: () => void;
+};
+
 export default function PreEntryScreen({
   onEnter,
-}: {
-  onEnter: () => void;
-}) {
+}: PreEntryScreenProps) {
   return (
     <div
       className="relative h-screen w-full overflow-hidden bg-[#0A0A0A] text-white"
       onClick={onEnter}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          onEnter();
+        }
+      }}
     >
       <Image
         src="/images/baeksa-invite.jpeg"
@@ -24,6 +33,7 @@ export default function PreEntryScreen({
 
       <div className="absolute inset-0 flex items-center justify-center">
         <button
+          type="button"
           onClick={(e) => {
             e.stopPropagation();
             onEnter();
