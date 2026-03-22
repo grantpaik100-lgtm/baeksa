@@ -1,18 +1,18 @@
-import React from "react";
-import "../globals.css";
+import "./globals.css";
+import type { Metadata } from "next";
 
-export const metadata = {
-  title: "BAEKSA",
-  description: "BAEKSA 파티 페이지"
+export const metadata: Metadata = {
+  title: "BAEKSA Entry",
+  description: "BAEKSA party entry form",
 };
 
 export default function RootLayout({
-  children
-}: {
+  children,
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
-    <html lang="en">
+    <html lang="ko">
       <body>{children}</body>
     </html>
   );
