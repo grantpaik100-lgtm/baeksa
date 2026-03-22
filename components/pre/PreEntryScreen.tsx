@@ -2,22 +2,32 @@
 
 import Image from "next/image";
 
-export default function PreEntryScreen() {
+export default function PreEntryScreen({
+  onEnter,
+}: {
+  onEnter: () => void;
+}) {
   return (
-    <div className="relative h-screen w-full overflow-hidden bg-[#0A0A0A] text-white">
+    <div
+      className="relative h-screen w-full overflow-hidden bg-[#0A0A0A] text-white"
+      onClick={onEnter}
+    >
       <Image
         src="/images/baeksa-invite.jpeg"
         alt="BAEKSA invitation poster"
         fill
         priority
         className="object-cover"
-      /> 
+      />
 
       <div className="absolute inset-0 bg-black/35" />
 
       <div className="absolute inset-0 flex items-center justify-center">
         <button
-          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            onEnter();
+          }}
           className="border border-white/30 bg-white/10 px-8 py-3 text-sm tracking-[0.35em] text-white/90 backdrop-blur-sm"
         >
           ENTER
