@@ -24,23 +24,23 @@ export default function PrePage() {
   const [currentStep, setCurrentStep] = useState(0);
   const [answers, setAnswers] = useState<Answers>({});
 
-  // ENTER → 설문 시작
   const handleEnter = () => {
+    console.log("ENTER fired");
     setEntered(true);
   };
 
+  if (!entered) {
+    return <PreEntryScreen onEnter={handleEnter} />;
+  }
+
   return (
-    <>
-      {!entered ? (
-        <PreEntryScreen onEnter={handleEnter} />
-      ) : (
-        <div className="h-screen w-full bg-[#0A0A0A] text-white flex items-center justify-center">
-          <div>
-            <p>STEP: {currentStep + 1}</p>
-            <pre>{JSON.stringify(answers, null, 2)}</pre>
-          </div>
-        </div>
-      )}
-    </>
+    <div className="flex h-screen w-full items-center justify-center bg-[#0A0A0A] text-white">
+      <div className="text-center">
+        <p className="mb-4 text-lg">STEP: {currentStep + 1}</p>
+        <pre className="text-left text-sm text-white/70">
+          {JSON.stringify(answers, null, 2)}
+        </pre>
+      </div>
+    </div>
   );
 }
