@@ -1,105 +1,97 @@
-"use client";
-
 import { useState } from "react";
-import { surveySections } from "../lib/survey";
-
-type Answers = {
-  [key: string]: string | string[];
-};
+import { saveSurvey } from "../lib/survey";
 
 export default function SurveyForm() {
-  const [answers, setAnswers] = useState<Answers>({});
-  const [submitted, setSubmitted] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    contact: "",
+    companions: "혼자",
+    music: [],
+    otherMusic: ""
+  });
 
-  const handleChange = (id: string, value: string) => {
-    setAnswers((prev) => ({ ...prev, [id]: value }));
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
   };
 
-  const handleMulti = (id: string, value: string) => {
-    const prev = (answers[id] as string[]) || [];
-    if (prev.includes(value)) {
-      setAnswers({ ...answers, [id]: prev.filter((v) => v !== value) });
-    } else {
-      setAnswers({ ...answers, [id]: [...prev, value] });
-    }
+  const handleMusicChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      music: prev.music.includes(value)
+        ? prev.music.filter((m) => m !== value)
+        : [...prev.music, value]
+    }));
   };
 
-  const handleSubmit = () => {
-    localStorage.setItem("baeksa_entry", JSON.stringify(answers));
-    setSubmitted(true);
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    saveSurvey(formData);
+    alert("Survey submitted!");
   };
-
-  if (submitted) {
-    return (
-      <div className="text-white text-center mt-40">
-        <p className="text-xl">ENTRY COMPLETE</p>
-      </div>
-    );
-  }
 
   return (
-    <div className="text-white max-w-xl mx-auto py-20 px-4 space-y-12">
-      {surveySections.map((section) => (
-        <div key={section.title}>
-          <h2 className="text-lg mb-4 opacity-70">{section.title}</h2>
-
-          <div className="space-y-6">
-            {section.questions.map((q) => (
-              <div key={q.id}>
-                <p className="mb-2">{q.title}</p>
-
-                {q.type === "text" || q.type === "tel" ? (
-                  <input
-                    type={q.type}
-                    className="w-full bg-black border border-gray-700 px-3 py-2"
-                    onChange={(e) => handleChange(q.id, e.target.value)}
-                  />
-                ) : null}
-
-                {q.type === "single" &&
-                  q.options?.map((opt) => (
-                    <button
-                      key={opt.value}
-                      onClick={() => handleChange(q.id, opt.value)}
-                      className={`block w-full text-left px-3 py-2 border mb-2 ${
-                        answers[q.id] === opt.value
-                          ? "border-white"
-                          : "border-gray-700"
-                      }`}
-                    >
-                      {opt.label}
-                    </button>
-                  ))}
-
-                {q.type === "multi" &&
-                  q.options?.map((opt) => {
-                    const selected = (answers[q.id] as string[])?.includes(
-                      opt.value
-                    );
-                    return (
-                      <button
-                        key={opt.value}
-                        onClick={() => handleMulti(q.id, opt.value)}
-                        className={`block w-full text-left px-3 py-2 border mb-2 ${
-                          selected ? "border-white" : "border-gray-700"
-                        }`}
-                      >
-                        {opt.label}
-                      </button>
-                    );
-                  })}
-              </div>
-            ))}
-          </div>
+    <form onSubmit={handleSubmit} className="space-y-4 text-white">
+      <div>
+        <label>이름:</label>
+        <input
+          type="text"
+          name="name"
+          value={formData.name}
+          onChange={handleChange}
+          className="block w-full p-2 bg-gray-800"
+        />
+      </div>
+      <div>
+        <label>연락처:</label>
+        <input
+          type="text"
+          name="contact"
+          value={formData.contact}
+          onChange={handleChange}
+          className="block w-full p-2 bg-gray-800"
+        />
+      </div>
+      <div>
+        <label>동반 여부:</label>
+        <select
+          name="companions"
+          value={formData.companions}
+          onChange={handleChange}
+          className="block w-full p-2 bg-gray-800"
+        >
+          <option>혼자</option>
+          <option>2인</option>
+          <option>그룹</option>
+        </select>
+      </div>
+      <div>
+        <label>음악 취향:</label>
+        <div>
+          {["Rock", "Hip-hop", "Jazz"].map((option, idx) => (
+            <label key={idx} className="block">
+              <input
+                type="checkbox"
+                value={option}
+                onChange={handleMusicChange}
+                checked={formData.music.includes(option)}
+                className="mr-2"
+              />
+              {option}
+            </label>
+          ))}
         </div>
-      ))}
-
-      <button
-        onClick={handleSubmit}
-        className="w-full border border-white py-3 mt-10"
-      >
-        SUBMIT
-      </button>
-    </div>
+        <input
+          type="text"
+          name="otherMusic"
+          placeholder="기타"
+          value={formData.otherMusic}
+          onChange={handleChange}
+          className="block w-full mt-2 p-2 bg-gray-800"
+        />
+      </div>
+      <button className="block px-6 py-2 bg-blue-600 rounded-lg">Submit</button>
+    </form>
   );
 }
