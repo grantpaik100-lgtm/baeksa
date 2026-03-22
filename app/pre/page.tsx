@@ -1,8 +1,8 @@
-import SurveyForm from "@/components/SurveyForm";
+import SurveyForm from "../../components/SurveyForm";
 
 export default function PrePage() {
   return (
-    <main className="min-h-screen bg-black">
+    <main className="min-h-screen bg-black text-white">
       <SurveyForm />
     </main>
   );
