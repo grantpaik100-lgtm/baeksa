@@ -1,5 +1,16 @@
-import PreEntryScreen from "@/components/pre/PreEntryScreen";
-
 export default function PrePage() {
-  return <div style={{ color: "white" }}>PRE PAGE</div>;
+  return (
+    <main
+      style={{
+        minHeight: "100vh",
+        background: "#0A0A0A",
+        color: "white",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      PRE OK
+    </main>
+  );
 }
