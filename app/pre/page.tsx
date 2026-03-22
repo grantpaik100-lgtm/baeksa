@@ -1,5 +1,5 @@
 import PreEntryScreen from "@/components/pre/PreEntryScreen";
 
 export default function PrePage() {
-  return <PreEntryScreen />;
+  return <div style={{ color: "white" }}>PRE PAGE</div>;
 }
