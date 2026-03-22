@@ -5,13 +5,13 @@ import Image from "next/image";
 export default function PreEntryScreen() {
   return (
     <div className="relative h-screen w-full overflow-hidden bg-[#0A0A0A] text-white">
-      <Image
+      {/* <Image
         src="/images/baeksa-invite.jpeg"
         alt="BAEKSA invitation poster"
         fill
         priority
         className="object-cover"
-      />
+      /> */}
 
       <div className="absolute inset-0 bg-black/35" />
 
