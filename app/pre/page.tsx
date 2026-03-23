@@ -53,11 +53,18 @@ export default function PrePage() {
   };
 
   const handleSubmit = () => {
-    if (!isCurrentStepValid) return;
+  if (!isCurrentStepValid) return;
 
-    console.log("BAEKSA ENTRY ANSWERS:", answers);
-    setSubmitted(true);
+  const payload = {
+    submittedAt: new Date().toISOString(),
+    answers,
   };
+
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+  console.log("BAEKSA ENTRY SAVED:", payload);
+
+  setSubmitted(true);
+};
 
   const handleExit = () => {
     setEntered(false);
