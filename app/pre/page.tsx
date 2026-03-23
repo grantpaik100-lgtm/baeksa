@@ -144,7 +144,7 @@ export default function PrePage() {
               <QuestionCard
                 question={currentQuestion}
                 answers={answers}
-                setAnswers={setAnswers}
+                onAnswerChange={setAnswers}
               />
             </div>
 
