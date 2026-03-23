@@ -85,7 +85,8 @@ export default function PrePage() {
   return (
     <main className="min-h-screen bg-black text-white">
       {!entered ? (
-        <section className="relative flex min-h-screen items-center justify-center overflow-hidden">
+        <section className="relative flex h-[100dvh] items-center justify-center overflow-hidden">
+        
           <Image
             src="/images/baeksa-invite.jpeg"
             alt="BAEKSA invitation poster"
@@ -95,22 +96,15 @@ export default function PrePage() {
           />
         
 
-          <div className="relative z-10 flex flex-col items-center justify-center px-6 text-center">
-            <p className="mb-4 text-[10px] tracking-[0.45em] text-white/60 sm:text-xs">
-              PRIVATE INVITATION
-            </p>
-
-            <h1 className="mb-10 text-4xl font-semibold tracking-[0.24em] sm:text-6xl">
-              BAEKSA
-            </h1>
-
-            <button
-              onClick={handleEnter}
-              className="border border-white/30 px-8 py-3 text-sm tracking-[0.35em] transition duration-300 hover:border-white hover:bg-white hover:text-black"
-            >
-              ENTER
-            </button>
-          </div>
+          
+<div className="relative z-10 flex h-full w-full flex-col items-center justify-center px-6 text-center">
+  <button
+    onClick={handleEnter}
+    className="rounded-full bg-white px-8 py-3 text-sm font-medium tracking-[0.22em] text-black shadow-lg transition duration-300 hover:scale-[1.02] active:scale-[0.98]"
+  >
+    ENTER
+  </button>
+</div>
         </section>
       ) : submitted ? (
         <section className="flex min-h-screen items-center justify-center px-6">
