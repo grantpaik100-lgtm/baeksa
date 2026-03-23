@@ -97,10 +97,10 @@ export default function PrePage() {
         
 
           
-<div className="relative z-10 flex h-full w-full flex-col items-center justify-center px-6 text-center">
+<div className="absolute inset-x-0 bottom-[34%] z-10 flex justify-center px-6 text-center sm:bottom-[30%]">
   <button
     onClick={handleEnter}
-    className="rounded-full bg-white px-8 py-3 text-sm font-medium tracking-[0.22em] text-black shadow-lg transition duration-300 hover:scale-[1.02] active:scale-[0.98]"
+    className="rounded-full bg-white/95 px-8 py-3 text-sm font-medium tracking-[0.22em] text-black shadow-xl backdrop-blur-[2px] transition duration-300 hover:scale-[1.02] active:scale-[0.98]"
   >
     TAP TO ENTER
   </button>
