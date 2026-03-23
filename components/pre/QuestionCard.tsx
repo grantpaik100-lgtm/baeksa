@@ -1,11 +1,13 @@
 "use client";
 
-type DoubleInputQuestion = {
+import React from "react";
+
+type MultiInputQuestion = {
   id: number;
-  type: "double-input";
+  type: "double-input" | "triple-input";
   title: string;
   subtitle?: string;
-  fields: readonly [string, string];
+  fields: readonly string[];
 };
 
 type SingleQuestion = {
@@ -17,7 +19,7 @@ type SingleQuestion = {
   options: readonly string[];
 };
 
-type Question = DoubleInputQuestion | SingleQuestion;
+type Question = MultiInputQuestion | SingleQuestion;
 
 type Props = {
   question: Question;
@@ -30,6 +32,15 @@ const fieldLabelMap: Record<string, string> = {
   phone: "연락처",
   birthYear: "출생연도",
   instagram: "인스타그램",
+  mbti: "MBTI",
+};
+
+const fieldPlaceholderMap: Record<string, string> = {
+  name: "이름 입력",
+  phone: "연락처 입력",
+  birthYear: "예: 2002",
+  instagram: "@아이디 또는 아이디",
+  mbti: "예: ENFP",
 };
 
 export default function QuestionCard({
@@ -44,13 +55,14 @@ export default function QuestionCard({
     }));
   };
 
-  if (question.type === "double-input") {
+  if (question.type === "double-input" || question.type === "triple-input") {
     return (
       <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 sm:p-8">
         <div className="mb-8">
           <h2 className="text-xl font-semibold tracking-[0.04em] sm:text-2xl">
             {question.title}
           </h2>
+
           {question.subtitle ? (
             <p className="mt-3 text-sm text-white/60">{question.subtitle}</p>
           ) : null}
@@ -62,12 +74,13 @@ export default function QuestionCard({
               <label className="mb-2 block text-sm tracking-[0.08em] text-white/65">
                 {fieldLabelMap[field] ?? field}
               </label>
+
               <input
                 type={field === "phone" ? "tel" : "text"}
                 value={answers[field] ?? ""}
                 onChange={(e) => updateAnswer(field, e.target.value)}
                 className="w-full border border-white/15 bg-black px-4 py-3 text-white outline-none transition placeholder:text-white/25 focus:border-white/45"
-                placeholder={fieldLabelMap[field] ?? field}
+                placeholder={fieldPlaceholderMap[field] ?? (fieldLabelMap[field] ?? field)}
               />
             </div>
           ))}
@@ -82,6 +95,7 @@ export default function QuestionCard({
         <h2 className="text-xl font-semibold tracking-[0.04em] sm:text-2xl">
           {question.title}
         </h2>
+
         {question.subtitle ? (
           <p className="mt-3 text-sm text-white/60">{question.subtitle}</p>
         ) : null}
