@@ -131,9 +131,9 @@ export default function PrePage() {
           </div>
         </section>
       ) : (
-        <section className="flex min-h-screen items-center justify-center px-4 py-10 sm:px-6">
+        <section className="flex min-h-[100dvh] items-start justify-center px-4 pt-6 pb-10 sm:px-6 sm:pt-10">
           <div className="w-full max-w-2xl">
-            <div className="mb-8">
+            <div className="mb-6">
               <div className="mb-3 flex items-center justify-between text-[11px] tracking-[0.25em] text-white/45">
                 <span>
                   {String(currentStep + 1).padStart(2, "0")} /{" "}
