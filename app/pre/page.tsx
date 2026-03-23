@@ -19,25 +19,22 @@ export default function PrePage() {
   }, [currentStep]);
 
   const isCurrentStepValid = useMemo(() => {
-  if (!currentQuestion) return false;
+    if (!currentQuestion) return false;
 
-  if (
-    currentQuestion.type === "double-input" ||
-    currentQuestion.type === "triple-input"
-  ) {
-    return currentQuestion.fields.every((field) => {
-      const value = answers[field];
+    if ("fields" in currentQuestion) {
+      return currentQuestion.fields.every((field) => {
+        const value = answers[field];
+        return typeof value === "string" && value.trim().length > 0;
+      });
+    }
+
+    if ("key" in currentQuestion) {
+      const value = answers[currentQuestion.key];
       return typeof value === "string" && value.trim().length > 0;
-    });
-  }
+    }
 
-  if ("key" in currentQuestion) {
-    const value = answers[currentQuestion.key];
-    return typeof value === "string" && value.trim().length > 0;
-  }
-
-  return false;
-}, [answers, currentQuestion]);
+    return false;
+  }, [answers, currentQuestion]);
 
   const handleEnter = () => {
     setEntered(true);
@@ -79,7 +76,6 @@ export default function PrePage() {
             priority
             className="object-cover"
           />
-
           <div className="absolute inset-0 bg-black/45" />
 
           <div className="relative z-10 flex flex-col items-center justify-center px-6 text-center">
