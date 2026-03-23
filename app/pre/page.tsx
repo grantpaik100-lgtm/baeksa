@@ -102,7 +102,7 @@ export default function PrePage() {
     onClick={handleEnter}
     className="rounded-full bg-white px-8 py-3 text-sm font-medium tracking-[0.22em] text-black shadow-lg transition duration-300 hover:scale-[1.02] active:scale-[0.98]"
   >
-    ENTER
+    TAP TO ENTER
   </button>
 </div>
         </section>
