@@ -83,7 +83,7 @@ export default function PrePage() {
   };
 
   return (
-    <main className="min-h-screen bg-black text-white">
+    <main className="bg-black text-white">
       {!entered ? (
         <section className="relative flex h-[100dvh] items-center justify-center overflow-hidden">
         
