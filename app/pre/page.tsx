@@ -7,9 +7,9 @@ import { questions } from "@/lib/questions";
 
 export default function PrePage() {
   const [entered, setEntered] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
-  const [submitted, setSubmitted] = useState(false);
 
   const currentQuestion = questions[currentStep];
   const isLastStep = currentStep === questions.length - 1;
@@ -19,22 +19,22 @@ export default function PrePage() {
   }, [currentStep]);
 
   const isCurrentStepValid = useMemo(() => {
-  if (!currentQuestion) return false;
+    if (!currentQuestion) return false;
 
-  if (currentQuestion.type === "double-input") {
-    return currentQuestion.fields.every((field) => {
-      const value = answers[field];
+    if (currentQuestion.type === "double-input") {
+      return currentQuestion.fields.every((field) => {
+        const value = answers[field];
+        return typeof value === "string" && value.trim().length > 0;
+      });
+    }
+
+    if ("key" in currentQuestion) {
+      const value = answers[currentQuestion.key];
       return typeof value === "string" && value.trim().length > 0;
-    });
-  }
+    }
 
-  if ("key" in currentQuestion) {
-    const value = answers[currentQuestion.key];
-    return typeof value === "string" && value.trim().length > 0;
-  }
-
-  return false;
-}, [answers, currentQuestion]);
+    return false;
+  }, [answers, currentQuestion]);
 
   const handleEnter = () => {
     setEntered(true);
@@ -48,15 +48,7 @@ export default function PrePage() {
   const handleNext = () => {
     if (!isCurrentStepValid) return;
     if (isLastStep) return;
-
     setCurrentStep((prev) => prev + 1);
-  };
-
-  const handleAnswerChange = (questionId: string, value: string) => {
-    setAnswers((prev) => ({
-      ...prev,
-      [questionId]: value,
-    }));
   };
 
   const handleSubmit = () => {
@@ -151,10 +143,8 @@ export default function PrePage() {
             <div className="animate-[fadeIn_0.35s_ease]">
               <QuestionCard
                 question={currentQuestion}
-                value={answers[currentQuestion.id] ?? ""}
-                onChange={(value: string) =>
-                  handleAnswerChange(currentQuestion.id, value)
-                }
+                answers={answers}
+                setAnswers={setAnswers}
               />
             </div>
 
@@ -171,7 +161,7 @@ export default function PrePage() {
                 <button
                   onClick={handleSubmit}
                   disabled={!isCurrentStepValid}
-                  className="min-w-[110px] border border-white px-5 py-3 text-sm tracking-[0.24em] text-black bg-white transition duration-300 disabled:cursor-not-allowed disabled:border-white/15 disabled:bg-white/10 disabled:text-white/35"
+                  className="min-w-[110px] border border-white bg-white px-5 py-3 text-sm tracking-[0.24em] text-black transition duration-300 disabled:cursor-not-allowed disabled:border-white/15 disabled:bg-white/10 disabled:text-white/35"
                 >
                   FINISH
                 </button>
@@ -179,7 +169,7 @@ export default function PrePage() {
                 <button
                   onClick={handleNext}
                   disabled={!isCurrentStepValid}
-                  className="min-w-[110px] border border-white px-5 py-3 text-sm tracking-[0.24em] text-black bg-white transition duration-300 disabled:cursor-not-allowed disabled:border-white/15 disabled:bg-white/10 disabled:text-white/35"
+                  className="min-w-[110px] border border-white bg-white px-5 py-3 text-sm tracking-[0.24em] text-black transition duration-300 disabled:cursor-not-allowed disabled:border-white/15 disabled:bg-white/10 disabled:text-white/35"
                 >
                   NEXT
                 </button>
