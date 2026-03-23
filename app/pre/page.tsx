@@ -5,6 +5,7 @@ import Image from "next/image";
 import QuestionCard from "@/components/pre/QuestionCard";
 import { questions } from "@/lib/questions";
 
+const STORAGE_KEY = "baeksa-entry";
 export default function PrePage() {
   const [entered, setEntered] = useState(false);
   const [submitted, setSubmitted] = useState(false);
