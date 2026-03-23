@@ -1,243 +1,111 @@
 "use client";
 
-type Answers = {
-  name?: string;
-  phone?: string;
-  reason?: string;
-  relationship?: string;
-  approach?: string;
-  groupSize?: string;
-  vibe?: string;
-  energy?: string;
-  trigger?: string;
-  birthYear?: string;
-  instagram?: string;
-  mbti?: string;
-  song1?: string;
-  song2?: string;
-  song3?: string;
+type DoubleInputQuestion = {
+  id: number;
+  type: "double-input";
+  title: string;
+  subtitle?: string;
+  fields: readonly [string, string];
 };
 
-type Question =
-  | {
-      id: number;
-      type: "double-input";
-      title: string;
-      subtitle: string;
-      fields: readonly ["name", "phone"];
-    }
-  | {
-      id: number;
-      type: "single";
-      title: string;
-      options: readonly string[];
-      key:
-        | "reason"
-        | "relationship"
-        | "approach"
-        | "groupSize"
-        | "vibe"
-        | "energy"
-        | "trigger";
-    }
-  | {
-      id: number;
-      type: "triple-input";
-      title: string;
-      fields: readonly ["birthYear", "instagram", "mbti"];
-    }
-  | {
-      id: number;
-      type: "songs";
-      title: string;
-      fields: readonly ["song1", "song2", "song3"];
-    };
+type SingleQuestion = {
+  id: number;
+  type: "single";
+  title: string;
+  subtitle?: string;
+  key: string;
+  options: readonly string[];
+};
+
+type Question = DoubleInputQuestion | SingleQuestion;
 
 type Props = {
   question: Question;
-  answers: Answers;
-  onChange: (key: keyof Answers, value: string) => void;
-  onNext: () => void;
-  onPrev: () => void;
-  isFirst: boolean;
-  isLast: boolean;
-  canGoNext: boolean;
+  answers: Record<string, string>;
+  onAnswerChange: React.Dispatch<React.SetStateAction<Record<string, string>>>;
 };
 
-const inputBase =
-  "w-full rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-4 text-sm text-white/90 outline-none placeholder:text-white/28 transition focus:border-white/25 focus:bg-white/[0.06]";
-
-const optionBase =
-  "w-full rounded-2xl border px-4 py-4 text-left text-sm transition";
-
-const optionIdle =
-  "border-white/10 bg-white/[0.03] text-white/80 hover:border-white/20 hover:bg-white/[0.05]";
-
-const optionActive = "border-white/40 bg-white/10 text-white";
-
-const labelBase = "mb-3 text-sm text-white/84";
+const fieldLabelMap: Record<string, string> = {
+  name: "이름",
+  phone: "연락처",
+  birthYear: "출생연도",
+  instagram: "인스타그램",
+};
 
 export default function QuestionCard({
   question,
   answers,
-  onChange,
-  onNext,
-  onPrev,
-  isFirst,
-  isLast,
-  canGoNext,
+  onAnswerChange,
 }: Props) {
-  const renderBody = () => {
-    if (question.type === "double-input") {
-      return (
-        <div className="space-y-5">
-          <div>
-            <p className={labelBase}>{question.title}</p>
-            <input
-              className={inputBase}
-              value={answers.name ?? ""}
-              onChange={(e) => onChange("name", e.target.value)}
-              placeholder="이름"
-            />
-          </div>
-
-          <div>
-            <p className={labelBase}>{question.subtitle}</p>
-            <input
-              className={inputBase}
-              value={answers.phone ?? ""}
-              onChange={(e) => onChange("phone", e.target.value)}
-              placeholder="연락처"
-              inputMode="tel"
-            />
-          </div>
-        </div>
-      );
-    }
-
-    if (question.type === "single") {
-      const selected = answers[question.key] ?? "";
-
-      return (
-        <div>
-          <p className="mb-5 text-base leading-relaxed text-white/90">
-            {question.title}
-          </p>
-
-          <div className="space-y-3">
-            {question.options.map((option) => {
-              const active = selected === option;
-
-              return (
-                <button
-                  key={option}
-                  type="button"
-                  onClick={() => onChange(question.key, option)}
-                  className={`${optionBase} ${active ? optionActive : optionIdle}`}
-                >
-                  {option}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      );
-    }
-
-    if (question.type === "triple-input") {
-      return (
-        <div>
-          <p className="mb-5 text-base leading-relaxed text-white/90">
-            {question.title}
-          </p>
-
-          <div className="space-y-3">
-            <input
-              className={inputBase}
-              value={answers.birthYear ?? ""}
-              onChange={(e) => onChange("birthYear", e.target.value)}
-              placeholder="출생연도"
-              inputMode="numeric"
-            />
-            <input
-              className={inputBase}
-              value={answers.instagram ?? ""}
-              onChange={(e) => onChange("instagram", e.target.value)}
-              placeholder="인스타"
-            />
-            <input
-              className={inputBase}
-              value={answers.mbti ?? ""}
-              onChange={(e) => onChange("mbti", e.target.value)}
-              placeholder="MBTI"
-            />
-          </div>
-        </div>
-      );
-    }
-
-    if (question.type === "songs") {
-      return (
-        <div>
-          <p className="mb-5 text-base leading-relaxed text-white/90">
-            {question.title}
-          </p>
-
-          <div className="space-y-3">
-            <input
-              className={inputBase}
-              value={answers.song1 ?? ""}
-              onChange={(e) => onChange("song1", e.target.value)}
-              placeholder="노래 1"
-            />
-            <input
-              className={inputBase}
-              value={answers.song2 ?? ""}
-              onChange={(e) => onChange("song2", e.target.value)}
-              placeholder="노래 2"
-            />
-            <input
-              className={inputBase}
-              value={answers.song3 ?? ""}
-              onChange={(e) => onChange("song3", e.target.value)}
-              placeholder="노래 3"
-            />
-          </div>
-        </div>
-      );
-    }
-
-    return null;
+  const updateAnswer = (key: string, value: string) => {
+    onAnswerChange((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
   };
 
+  if (question.type === "double-input") {
+    return (
+      <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 sm:p-8">
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold tracking-[0.04em] sm:text-2xl">
+            {question.title}
+          </h2>
+          {question.subtitle ? (
+            <p className="mt-3 text-sm text-white/60">{question.subtitle}</p>
+          ) : null}
+        </div>
+
+        <div className="space-y-4">
+          {question.fields.map((field) => (
+            <div key={field}>
+              <label className="mb-2 block text-sm tracking-[0.08em] text-white/65">
+                {fieldLabelMap[field] ?? field}
+              </label>
+              <input
+                type={field === "phone" ? "tel" : "text"}
+                value={answers[field] ?? ""}
+                onChange={(e) => updateAnswer(field, e.target.value)}
+                className="w-full border border-white/15 bg-black px-4 py-3 text-white outline-none transition placeholder:text-white/25 focus:border-white/45"
+                placeholder={fieldLabelMap[field] ?? field}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="w-full max-w-xl rounded-[28px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_0_0_1px_rgba(255,255,255,0.02)] backdrop-blur-md md:p-7">
-      <div className="mb-3 text-[11px] tracking-[0.24em] text-white/30">
-        BAEKSA
+    <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 sm:p-8">
+      <div className="mb-8">
+        <h2 className="text-xl font-semibold tracking-[0.04em] sm:text-2xl">
+          {question.title}
+        </h2>
+        {question.subtitle ? (
+          <p className="mt-3 text-sm text-white/60">{question.subtitle}</p>
+        ) : null}
       </div>
 
-      <div className="mb-8 transition-opacity duration-300 ease-out">
-        {renderBody()}
-      </div>
+      <div className="space-y-3">
+        {question.options.map((option) => {
+          const selected = answers[question.key] === option;
 
-      <div className="flex items-center justify-between gap-3">
-        <button
-          type="button"
-          onClick={onPrev}
-          disabled={isFirst}
-          className="rounded-full border border-white/10 px-4 py-2 text-xs tracking-[0.2em] text-white/45 transition hover:border-white/20 hover:text-white/70 disabled:cursor-not-allowed disabled:opacity-30"
-        >
-          BACK
-        </button>
-
-        <button
-          type="button"
-          onClick={onNext}
-          disabled={!canGoNext}
-          className="rounded-full border border-white/20 bg-white/10 px-5 py-2 text-xs tracking-[0.24em] text-white/90 transition hover:bg-white/15 disabled:cursor-not-allowed disabled:border-white/10 disabled:bg-white/[0.04] disabled:text-white/28"
-        >
-          {isLast ? "FINISH" : "NEXT"}
-        </button>
+          return (
+            <button
+              key={option}
+              type="button"
+              onClick={() => updateAnswer(question.key, option)}
+              className={`w-full border px-4 py-4 text-left text-sm tracking-[0.03em] transition ${
+                selected
+                  ? "border-white bg-white text-black"
+                  : "border-white/12 bg-transparent text-white hover:border-white/35"
+              }`}
+            >
+              {option}
+            </button>
+          );
+        })}
       </div>
     </div>
   );
