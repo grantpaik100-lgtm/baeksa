@@ -2,9 +2,9 @@
 
 import React from "react";
 
-type MultiInputQuestion = {
+type FieldQuestion = {
   id: number;
-  type: "double-input" | "triple-input";
+  type: string;
   title: string;
   subtitle?: string;
   fields: readonly string[];
@@ -19,7 +19,7 @@ type SingleQuestion = {
   options: readonly string[];
 };
 
-type Question = MultiInputQuestion | SingleQuestion;
+type Question = FieldQuestion | SingleQuestion;
 
 type Props = {
   question: Question;
@@ -33,6 +33,9 @@ const fieldLabelMap: Record<string, string> = {
   birthYear: "출생연도",
   instagram: "인스타그램",
   mbti: "MBTI",
+  song1: "노래 1",
+  song2: "노래 2",
+  song3: "노래 3",
 };
 
 const fieldPlaceholderMap: Record<string, string> = {
@@ -41,6 +44,9 @@ const fieldPlaceholderMap: Record<string, string> = {
   birthYear: "예: 2002",
   instagram: "@아이디 또는 아이디",
   mbti: "예: ENFP",
+  song1: "첫 번째 곡",
+  song2: "두 번째 곡",
+  song3: "세 번째 곡",
 };
 
 export default function QuestionCard({
@@ -55,7 +61,7 @@ export default function QuestionCard({
     }));
   };
 
-  if (question.type === "double-input" || question.type === "triple-input") {
+  if ("fields" in question) {
     return (
       <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 sm:p-8">
         <div className="mb-8">
@@ -80,7 +86,9 @@ export default function QuestionCard({
                 value={answers[field] ?? ""}
                 onChange={(e) => updateAnswer(field, e.target.value)}
                 className="w-full border border-white/15 bg-black px-4 py-3 text-white outline-none transition placeholder:text-white/25 focus:border-white/45"
-                placeholder={fieldPlaceholderMap[field] ?? (fieldLabelMap[field] ?? field)}
+                placeholder={
+                  fieldPlaceholderMap[field] ?? (fieldLabelMap[field] ?? field)
+                }
               />
             </div>
           ))}
