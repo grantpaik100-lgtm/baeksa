@@ -19,22 +19,25 @@ export default function PrePage() {
   }, [currentStep]);
 
   const isCurrentStepValid = useMemo(() => {
-    if (!currentQuestion) return false;
+  if (!currentQuestion) return false;
 
-    if (currentQuestion.type === "double-input") {
-      return currentQuestion.fields.every((field) => {
-        const value = answers[field];
-        return typeof value === "string" && value.trim().length > 0;
-      });
-    }
-
-    if ("key" in currentQuestion) {
-      const value = answers[currentQuestion.key];
+  if (
+    currentQuestion.type === "double-input" ||
+    currentQuestion.type === "triple-input"
+  ) {
+    return currentQuestion.fields.every((field) => {
+      const value = answers[field];
       return typeof value === "string" && value.trim().length > 0;
-    }
+    });
+  }
 
-    return false;
-  }, [answers, currentQuestion]);
+  if ("key" in currentQuestion) {
+    const value = answers[currentQuestion.key];
+    return typeof value === "string" && value.trim().length > 0;
+  }
+
+  return false;
+}, [answers, currentQuestion]);
 
   const handleEnter = () => {
     setEntered(true);
