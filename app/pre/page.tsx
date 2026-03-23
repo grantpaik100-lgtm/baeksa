@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import Image from "next/image";
 import QuestionCard from "@/components/pre/QuestionCard";
 import { questions } from "@/lib/questions";
-const ENDPOINT = "https://script.google.com/macros/s/AKfycbwXQchy4rlMmjCL4JB56ALoDdJ_6LTbR3QuTvDwDp_4r04ikSlrrC6S_jaBKl5WevBh/exec";
+const ENDPOINT = "https://script.google.com/macros/s/AKfycbxfDjrwAeiwWt56gfi5lxfNGfWc-ea75jgl7xIENUCBzl4GpF4xSlIUNQa9jnJqFKTd/exec";
 const STORAGE_KEY = "baeksa-entry";
 export default function PrePage() {
   const [entered, setEntered] = useState(false);
