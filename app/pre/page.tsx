@@ -93,7 +93,7 @@ export default function PrePage() {
             priority
             className="object-cover"
           />
-          <div className="absolute inset-0 bg-black/45" />
+        
 
           <div className="relative z-10 flex flex-col items-center justify-center px-6 text-center">
             <p className="mb-4 text-[10px] tracking-[0.45em] text-white/60 sm:text-xs">
