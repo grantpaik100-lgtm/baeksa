@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import Image from "next/image";
 import QuestionCard from "@/components/pre/QuestionCard";
 import { questions } from "@/lib/questions";
-
+const ENDPOINT = "https://script.google.com/macros/s/AKfycbyhNkCGrdDKMB_vnb-9b_8uu7iPavIf_xZQCi-_cAenA5KPu5klcMs2DEn30XGa_g79/exec";
 const STORAGE_KEY = "baeksa-entry";
 export default function PrePage() {
   const [entered, setEntered] = useState(false);
@@ -52,7 +52,7 @@ export default function PrePage() {
     setCurrentStep((prev) => prev + 1);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
   if (!isCurrentStepValid) return;
 
   const payload = {
@@ -60,10 +60,19 @@ export default function PrePage() {
     answers,
   };
 
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
-  console.log("BAEKSA ENTRY SAVED:", payload);
+  try {
+    await fetch(ENDPOINT, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
 
-  setSubmitted(true);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+
+    setSubmitted(true);
+  } catch (error) {
+    console.error("SUBMIT ERROR:", error);
+    alert("제출 실패. 다시 시도해주세요.");
+  }
 };
 
   const handleExit = () => {
