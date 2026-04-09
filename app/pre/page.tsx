@@ -4,8 +4,13 @@ import { useMemo, useState } from "react";
 import Image from "next/image";
 import QuestionCard from "@/components/pre/QuestionCard";
 import { questions } from "@/lib/questions";
-const ENDPOINT = "https://script.google.com/macros/s/AKfycbxfDjrwAeiwWt56gfi5lxfNGfWc-ea75jgl7xIENUCBzl4GpF4xSlIUNQa9jnJqFKTd/exec";
-const STORAGE_KEY = "baeksa-entry";
+
+const ENDPOINT =
+  "https://script.google.com/macros/s/AKfycbxfDjrwAeiwWt56gfi5lxfNGfWc-ea75jgl7xIENUCBzl4GpF4xSlIUNQa9jnJqFKTd/exec";
+
+const STORAGE_KEY = "baeksa-entry-v2";
+const FORM_VERSION = "v2";
+
 export default function PrePage() {
   const [entered, setEntered] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -22,14 +27,18 @@ export default function PrePage() {
   const isCurrentStepValid = useMemo(() => {
     if (!currentQuestion) return false;
 
-    if ("fields" in currentQuestion) {
-      return currentQuestion.fields.every((field) => {
-        const value = answers[field];
+    if (currentQuestion.type === "multi-input") {
+      const requiredFields = currentQuestion.fields.filter(
+        (field) => field.required !== false
+      );
+
+      return requiredFields.every((field) => {
+        const value = answers[field.key];
         return typeof value === "string" && value.trim().length > 0;
       });
     }
 
-    if ("key" in currentQuestion) {
+    if (currentQuestion.type === "single") {
       const value = answers[currentQuestion.key];
       return typeof value === "string" && value.trim().length > 0;
     }
@@ -53,27 +62,27 @@ export default function PrePage() {
   };
 
   const handleSubmit = async () => {
-  if (!isCurrentStepValid) return;
+    if (!isCurrentStepValid) return;
 
-  const payload = {
-    submittedAt: new Date().toISOString(),
-    answers,
+    const payload = {
+      submittedAt: new Date().toISOString(),
+      version: FORM_VERSION,
+      answers,
+    };
+
+    try {
+      await fetch(ENDPOINT, {
+        method: "POST",
+        body: JSON.stringify(payload),
+      });
+
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+      setSubmitted(true);
+    } catch (error) {
+      console.error("SUBMIT ERROR:", error);
+      alert("제출 실패. 다시 시도해주세요.");
+    }
   };
-
-  try {
-    await fetch(ENDPOINT, {
-      method: "POST",
-      body: JSON.stringify(payload),
-    });
-
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
-
-    setSubmitted(true);
-  } catch (error) {
-    console.error("SUBMIT ERROR:", error);
-    alert("제출 실패. 다시 시도해주세요.");
-  }
-};
 
   const handleExit = () => {
     setEntered(false);
@@ -86,7 +95,6 @@ export default function PrePage() {
     <main className="bg-black text-white">
       {!entered ? (
         <section className="relative flex h-[100dvh] items-center justify-center overflow-hidden">
-        
           <Image
             src="/images/baeksa-invite.jpeg"
             alt="BAEKSA invitation poster"
@@ -94,17 +102,15 @@ export default function PrePage() {
             priority
             className="object-cover"
           />
-        
 
-          
-<div className="absolute inset-x-0 bottom-[34%] z-10 flex justify-center px-6 text-center sm:bottom-[30%]">
-  <button
-    onClick={handleEnter}
-    className="rounded-full bg-white/95 px-8 py-3 text-sm font-medium tracking-[0.22em] text-black shadow-xl backdrop-blur-[2px] transition duration-300 hover:scale-[1.02] active:scale-[0.98]"
-  >
-    TAP TO ENTER
-  </button>
-</div>
+          <div className="absolute inset-x-0 bottom-[34%] z-10 flex justify-center px-6 text-center sm:bottom-[30%]">
+            <button
+              onClick={handleEnter}
+              className="rounded-full bg-white/95 px-8 py-3 text-sm font-medium tracking-[0.22em] text-black shadow-xl backdrop-blur-[2px] transition duration-300 hover:scale-[1.02] active:scale-[0.98]"
+            >
+              TAP TO ENTER
+            </button>
+          </div>
         </section>
       ) : submitted ? (
         <section className="flex min-h-screen items-center justify-center px-6">
@@ -131,7 +137,7 @@ export default function PrePage() {
           </div>
         </section>
       ) : (
-        <section className="flex min-h-[100dvh] items-start justify-center px-4 pt-6 pb-10 sm:px-6 sm:pt-10">
+        <section className="flex min-h-[100dvh] items-start justify-center px-4 pb-10 pt-6 sm:px-6 sm:pt-10">
           <div className="w-full max-w-2xl">
             <div className="mb-6">
               <div className="mb-3 flex items-center justify-between text-[11px] tracking-[0.25em] text-white/45">
