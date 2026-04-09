@@ -51,7 +51,7 @@ export const questions: readonly Question[] = [
   {
     id: 1,
     type: "single",
-    title: "오늘 이 자리에서 가장 얻고 싶은 것은 무엇인가요?",
+    title: "이번 파티에서 가장 얻고 싶은 것은 무엇인가요?",
     options: [
       "새로운 사람과 연결",
       "편하게 어울리기",
@@ -63,8 +63,8 @@ export const questions: readonly Question[] = [
   {
     id: 2,
     type: "single",
-    title: "오늘 나는 어떤 모드에 가까운가요?",
-    subtitle: "오늘의 상태를 기준으로 골라주세요",
+    title: "파티에서 나는 어떤 모드에 가까운가요?",
+    subtitle: "평소의 상태를 기준으로 골라주세요",
     options: [
       "먼저 섞어보고 싶다",
       "누가 열어주면 잘 섞일 수 있다",
@@ -117,7 +117,7 @@ export const questions: readonly Question[] = [
   {
     id: 7,
     type: "single",
-    title: "오늘 나는 어떤 에너지의 사람과 잘 맞을 것 같나요?",
+    title: "어떤 에너지의 사람과 잘 맞을 것 같나요?",
     options: [
       "밝고 적극적인 사람",
       "너무 세지 않은 편안한 사람",
@@ -129,7 +129,7 @@ export const questions: readonly Question[] = [
   {
     id: 8,
     type: "single",
-    title: "아래 중 오늘 가장 부담스러운 상황은 무엇인가요?",
+    title: "아래 중 가장 부담스러운 상황은 무엇인가요?",
     options: [
       "너무 텐션이 높은 분위기",
       "이미 친한 사람들 사이에 들어가는 것",
@@ -141,7 +141,7 @@ export const questions: readonly Question[] = [
   {
     id: 9,
     type: "single",
-    title: "오늘은 어떤 쪽에 더 가까운가요?",
+    title: " 초대 받으신 분의 성향은 어떤 쪽에 가까운가요?",
     options: [
       "여러 사람과 넓게 만나고 싶다",
       "몇 명과 깊게 대화하고 싶다",
@@ -180,21 +180,21 @@ export const questions: readonly Question[] = [
       {
         key: "song1",
         label: "노래 1",
-        placeholder: "첫 번째 곡",
+        placeholder: "첫 번째 곡-가수",
         inputType: "text",
         required: true,
       },
       {
         key: "song2",
         label: "노래 2",
-        placeholder: "두 번째 곡",
+        placeholder: "두 번째 곡-가수",
         inputType: "text",
         required: true,
       },
       {
         key: "song3",
         label: "노래 3",
-        placeholder: "세 번째 곡",
+        placeholder: "세 번째 곡-가수",
         inputType: "text",
         required: true,
       },
