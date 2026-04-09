@@ -144,6 +144,7 @@ export default function PrePage() {
   >
     EXIT
   </button>
+
 </div>
         </section>
       ) : (
