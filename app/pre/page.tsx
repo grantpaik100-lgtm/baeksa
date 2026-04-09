@@ -115,26 +115,36 @@ export default function PrePage() {
       ) : submitted ? (
         <section className="flex min-h-screen items-center justify-center px-6">
           <div className="w-full max-w-2xl text-center">
-            <p className="mb-4 text-[10px] tracking-[0.45em] text-white/45 sm:text-xs">
-              BAEKSA
-            </p>
+  <p className="mb-4 text-[10px] tracking-[0.45em] text-white/45 sm:text-xs">
+    BAEKSA
+  </p>
 
-            <h1 className="text-3xl font-semibold tracking-[0.18em] sm:text-5xl">
-              ENTRY ACCEPTED
-            </h1>
+  <h1 className="text-3xl font-semibold tracking-[0.18em] sm:text-5xl">
+    ENTRY ACCEPTED
+  </h1>
 
-            <div className="mt-6 space-y-2 text-sm tracking-[0.22em] text-white/70 sm:text-base">
-              <p>YOU ARE NOW INSIDE</p>
-              <p>DETAILS WILL BE REVEALED</p>
-            </div>
+  <div className="mt-6 space-y-2 text-sm tracking-[0.22em] text-white/70 sm:text-base">
+    <p>YOU ARE NOW INSIDE</p>
+    <p>DETAILS WILL BE REVEALED</p>
+  </div>
 
-            <button
-              onClick={handleExit}
-              className="mt-12 border border-white/20 px-8 py-3 text-sm tracking-[0.3em] transition duration-300 hover:border-white hover:bg-white hover:text-black"
-            >
-              EXIT
-            </button>
-          </div>
+  <div className="mx-auto mt-8 max-w-md rounded-2xl border border-white/12 bg-white/[0.04] px-6 py-5 text-left">
+    <p className="text-[11px] tracking-[0.25em] text-white/40">
+      FINAL NOTE
+    </p>
+    <div className="mt-3 space-y-2 text-sm text-white/75">
+      <p>입장 확정 인원에 한해 1인당 30,000원의 참가비가 적용됩니다.</p>
+      <p>세부 장소 및 최종 안내는 개별적으로 전달됩니다.</p>
+    </div>
+  </div>
+
+  <button
+    onClick={handleExit}
+    className="mt-12 border border-white/20 px-8 py-3 text-sm tracking-[0.3em] transition duration-300 hover:border-white hover:bg-white hover:text-black"
+  >
+    EXIT
+  </button>
+</div>
         </section>
       ) : (
         <section className="flex min-h-[100dvh] items-start justify-center px-4 pb-10 pt-6 sm:px-6 sm:pt-10">
