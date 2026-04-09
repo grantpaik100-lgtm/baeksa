@@ -1,52 +1,12 @@
 "use client";
 
 import React from "react";
-
-type FieldQuestion = {
-  id: number;
-  type: string;
-  title: string;
-  subtitle?: string;
-  fields: readonly string[];
-};
-
-type SingleQuestion = {
-  id: number;
-  type: "single";
-  title: string;
-  subtitle?: string;
-  key: string;
-  options: readonly string[];
-};
-
-type Question = FieldQuestion | SingleQuestion;
+import type { Question } from "@/lib/questions";
 
 type Props = {
   question: Question;
   answers: Record<string, string>;
   onAnswerChange: React.Dispatch<React.SetStateAction<Record<string, string>>>;
-};
-
-const fieldLabelMap: Record<string, string> = {
-  name: "이름",
-  phone: "연락처",
-  birthYear: "출생연도",
-  instagram: "인스타그램",
-  mbti: "MBTI",
-  song1: "노래 1",
-  song2: "노래 2",
-  song3: "노래 3",
-};
-
-const fieldPlaceholderMap: Record<string, string> = {
-  name: "이름 입력",
-  phone: "연락처 입력",
-  birthYear: "예: 2002",
-  instagram: "@아이디 또는 아이디",
-  mbti: "예: ENFP",
-  song1: "첫 번째 곡",
-  song2: "두 번째 곡",
-  song3: "세 번째 곡",
 };
 
 export default function QuestionCard({
@@ -61,7 +21,7 @@ export default function QuestionCard({
     }));
   };
 
-  if ("fields" in question) {
+  if (question.type === "multi-input") {
     return (
       <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 sm:p-8">
         <div className="mb-8">
@@ -76,19 +36,22 @@ export default function QuestionCard({
 
         <div className="space-y-4">
           {question.fields.map((field) => (
-            <div key={field}>
+            <div key={field.key}>
               <label className="mb-2 block text-sm tracking-[0.08em] text-white/65">
-                {fieldLabelMap[field] ?? field}
+                {field.label}
+                {field.required ? (
+                  <span className="ml-2 text-white/35">*</span>
+                ) : (
+                  <span className="ml-2 text-white/25">(선택)</span>
+                )}
               </label>
 
               <input
-                type={field === "phone" ? "tel" : "text"}
-                value={answers[field] ?? ""}
-                onChange={(e) => updateAnswer(field, e.target.value)}
+                type={field.inputType ?? "text"}
+                value={answers[field.key] ?? ""}
+                onChange={(e) => updateAnswer(field.key, e.target.value)}
                 className="w-full border border-white/15 bg-black px-4 py-3 text-white outline-none transition placeholder:text-white/25 focus:border-white/45"
-                placeholder={
-                  fieldPlaceholderMap[field] ?? (fieldLabelMap[field] ?? field)
-                }
+                placeholder={field.placeholder ?? field.label}
               />
             </div>
           ))}
