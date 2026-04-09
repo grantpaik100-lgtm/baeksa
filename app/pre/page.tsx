@@ -6,7 +6,7 @@ import QuestionCard from "@/components/pre/QuestionCard";
 import { questions } from "@/lib/questions";
 
 const ENDPOINT =
-  "https://script.google.com/macros/s/AKfycbxfDjrwAeiwWt56gfi5lxfNGfWc-ea75jgl7xIENUCBzl4GpF4xSlIUNQa9jnJqFKTd/exec";
+  "https://script.google.com/macros/s/AKfycbwi8-Ob6FXG9LQ4e-hTq8J6ayomxRRjY02r9v1HsaqBZsTIPyHkdsqEWR7I7Jvs7UJD/exec";
 
 const STORAGE_KEY = "baeksa-entry-v2";
 const FORM_VERSION = "v2";
