@@ -50,6 +50,21 @@ export const questions: readonly Question[] = [
   },
   {
     id: 1,
+    type: "multi-input",
+    title: "누구 지인으로 오셨나요?",
+    subtitle: "초대한 분 또는 연결된 지인의 이름을 적어주세요",
+    fields: [
+      {
+        key: "invitedBy",
+        label: "연결된 사람 이름",
+        placeholder: "예: 김민수",
+        inputType: "text",
+        required: true,
+      },
+    ],
+  },
+  {
+    id: 2,
     type: "single",
     title: "이번 파티에서 가장 얻고 싶은 것은 무엇인가요?",
     options: [
@@ -61,7 +76,7 @@ export const questions: readonly Question[] = [
     key: "goal",
   },
   {
-    id: 2,
+    id: 3,
     type: "single",
     title: "파티에서 나는 어떤 모드에 가까운가요?",
     subtitle: "평소의 상태를 기준으로 골라주세요",
@@ -73,7 +88,7 @@ export const questions: readonly Question[] = [
     key: "todayMode",
   },
   {
-    id: 3,
+    id: 4,
     type: "single",
     title: "처음 보는 사람에게 먼저 말을 거는 편인가요?",
     options: [
@@ -84,14 +99,14 @@ export const questions: readonly Question[] = [
     key: "approachStyle",
   },
   {
-    id: 4,
+    id: 5,
     type: "single",
     title: "가장 편하게 대화가 되는 단위는 무엇인가요?",
     options: ["1:1", "2–4명", "5명 이상도 괜찮다"],
     key: "groupComfort",
   },
   {
-    id: 5,
+    id: 6,
     type: "single",
     title: "어떤 대화가 가장 편한가요?",
     options: [
@@ -103,7 +118,7 @@ export const questions: readonly Question[] = [
     key: "conversationStyle",
   },
   {
-    id: 6,
+    id: 7,
     type: "single",
     title: "대화가 가장 잘 풀리는 시작 방식은 무엇인가요?",
     options: [
@@ -115,7 +130,7 @@ export const questions: readonly Question[] = [
     key: "triggerStyle",
   },
   {
-    id: 7,
+    id: 8,
     type: "single",
     title: "어떤 에너지의 사람과 잘 맞을 것 같나요?",
     options: [
@@ -127,7 +142,7 @@ export const questions: readonly Question[] = [
     key: "preferredEnergy",
   },
   {
-    id: 8,
+    id: 9,
     type: "single",
     title: "아래 중 가장 부담스러운 상황은 무엇인가요?",
     options: [
@@ -139,7 +154,7 @@ export const questions: readonly Question[] = [
     key: "socialRisk",
   },
   {
-    id: 9,
+    id: 10,
     type: "single",
     title: " 초대 받으신 분의 성향은 어떤 쪽에 가까운가요?",
     options: [
@@ -150,7 +165,7 @@ export const questions: readonly Question[] = [
     key: "mixingStyle",
   },
   {
-    id: 10,
+    id: 11,
     type: "multi-input",
     title: "가벼운 프로필",
     subtitle: "선택 입력입니다",
@@ -172,7 +187,7 @@ export const questions: readonly Question[] = [
     ],
   },
   {
-    id: 11,
+    id: 12,
     type: "multi-input",
     title: "자신을 가장 잘 표현하는 노래 3곡",
     subtitle: "정답은 없습니다. 지금의 당신을 가장 잘 보여주는 곡이면 됩니다",
