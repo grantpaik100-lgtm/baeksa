@@ -74,7 +74,9 @@ export default function PrePage() {
       submittedAt: new Date().toISOString(),
       version: FORM_VERSION,
       answers,
-      submissionKey: `${answers.name ?? ""}__${answers.phone ?? ""}`,
+      submissionKey: `${String(answers.name ?? "").trim().replace(/\s+/g, " ")}__${String(
+  answers.phone ?? ""
+).replace(/[^0-9]/g, "")}`,
     };
 
     try {
