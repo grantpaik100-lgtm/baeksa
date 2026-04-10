@@ -19,14 +19,16 @@ export default function PrePage() {
   const [currentStep, setCurrentStep] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
 
-  const currentQuestion = questions[currentStep];
-  const isLastStep = currentStep === questions.length - 1;
+  const totalSteps = questions.length + 1; // privacy notice 1장 추가
+  const currentQuestion = currentStep === 0 ? null : questions[currentStep - 1];
+  const isLastStep = currentStep === totalSteps - 1;
 
   const progress = useMemo(() => {
-    return ((currentStep + 1) / questions.length) * 100;
-  }, [currentStep]);
+    return ((currentStep + 1) / totalSteps) * 100;
+  }, [currentStep, totalSteps]);
 
   const isCurrentStepValid = useMemo(() => {
+    if (currentStep === 0) return true;
     if (!currentQuestion) return false;
 
     if (currentQuestion.type === "multi-input") {
@@ -46,7 +48,7 @@ export default function PrePage() {
     }
 
     return false;
-  }, [answers, currentQuestion]);
+  }, [answers, currentQuestion, currentStep]);
 
   const handleEnter = () => {
     setEntered(true);
@@ -58,12 +60,14 @@ export default function PrePage() {
   };
 
   const handleNext = () => {
-    if (!isCurrentStepValid || isSubmitting) return;
+    if (isSubmitting) return;
+    if (currentStep !== 0 && !isCurrentStepValid) return;
     if (isLastStep) return;
     setCurrentStep((prev) => prev + 1);
   };
 
   const handleSubmit = async () => {
+    if (!isLastStep) return;
     if (!isCurrentStepValid) return;
     if (isSubmitting) return;
 
@@ -75,10 +79,8 @@ export default function PrePage() {
       version: FORM_VERSION,
       answers,
       submissionKey: `${String(answers.name ?? "")
-  .trim()
-  .replace(/\s+/g, " ")}__${String(
-  answers.phone ?? ""
-).replace(/[^0-9]/g, "")}`,
+        .trim()
+        .replace(/\s+/g, " ")}__${String(answers.phone ?? "").replace(/[^0-9]/g, "")}`,
     };
 
     try {
@@ -206,7 +208,7 @@ export default function PrePage() {
               <div className="mb-3 flex items-center justify-between text-[11px] tracking-[0.25em] text-white/45">
                 <span>
                   {String(currentStep + 1).padStart(2, "0")} /{" "}
-                  {String(questions.length).padStart(2, "0")}
+                  {String(totalSteps).padStart(2, "0")}
                 </span>
                 <span>ENTRY FORM</span>
               </div>
@@ -220,11 +222,35 @@ export default function PrePage() {
             </div>
 
             <div className="animate-[fadeIn_0.35s_ease]">
-              <QuestionCard
-                question={currentQuestion}
-                answers={answers}
-                onAnswerChange={setAnswers}
-              />
+              {currentStep === 0 ? (
+                <div className="rounded-[28px] border border-white/10 bg-white/[0.02] px-8 py-10 sm:px-10 sm:py-12">
+                  <p className="text-[11px] tracking-[0.35em] text-white/40">
+                    PRIVATE ENTRY PROTOCOL
+                  </p>
+
+                  <h2 className="mt-5 text-3xl font-semibold tracking-[0.12em] sm:text-4xl">
+                    PRIVACY NOTICE
+                  </h2>
+
+                  <div className="mt-8 space-y-4 text-sm leading-7 text-white/70 sm:text-base">
+                    <p>
+                      입력된 이름 및 연락처는 행사 운영과 최종 안내 전달을 위해서만
+                      사용됩니다.
+                    </p>
+
+                    <p>
+                      모든 개인정보는 행사 종료 후 즉시 폐기되며 다른 목적으로는
+                      사용되지 않습니다.
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <QuestionCard
+                  question={currentQuestion!}
+                  answers={answers}
+                  onAnswerChange={setAnswers}
+                />
+              )}
             </div>
 
             <div className="mt-8 flex items-center justify-between gap-3">
@@ -247,7 +273,7 @@ export default function PrePage() {
               ) : (
                 <button
                   onClick={handleNext}
-                  disabled={!isCurrentStepValid || isSubmitting}
+                  disabled={(currentStep !== 0 && !isCurrentStepValid) || isSubmitting}
                   className="min-w-[110px] border border-white bg-white px-5 py-3 text-sm tracking-[0.24em] text-black transition duration-300 disabled:cursor-not-allowed disabled:border-white/15 disabled:bg-white/10 disabled:text-white/35"
                 >
                   NEXT
