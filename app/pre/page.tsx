@@ -6,7 +6,7 @@ import QuestionCard from "@/components/pre/QuestionCard";
 import { questions } from "@/lib/questions";
 
 const ENDPOINT =
-  "https://script.google.com/macros/s/AKfycbwR7q5czr7q4ut48xjaleQgr4A0IApgeobtbtyjRIl1jWKPxim__7xqfrrcBuqNsO8U/exec";
+  "https://script.google.com/macros/s/AKfycbzTD-RQIr5FDaH8WFnyvSlRbLb4Ft8MIeNfY_YlJ6W9AeFf0BoiRow9ZlAZf7AoFMOw/exec";
 
 const STORAGE_KEY = "baeksa-entry-v2";
 const FORM_VERSION = "v2";
@@ -74,7 +74,9 @@ export default function PrePage() {
       submittedAt: new Date().toISOString(),
       version: FORM_VERSION,
       answers,
-      submissionKey: `${String(answers.name ?? "").trim().replace(/\s+/g, " ")}__${String(
+      submissionKey: `${String(answers.name ?? "")
+  .trim()
+  .replace(/\s+/g, " ")}__${String(
   answers.phone ?? ""
 ).replace(/[^0-9]/g, "")}`,
     };
