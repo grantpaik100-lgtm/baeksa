@@ -14,6 +14,8 @@ const FORM_VERSION = "v2";
 export default function PrePage() {
   const [entered, setEntered] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitPhase, setSubmitPhase] = useState<"form" | "processing" | "done">("form");
   const [currentStep, setCurrentStep] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
 
@@ -51,35 +53,63 @@ export default function PrePage() {
   };
 
   const handleBack = () => {
-    if (currentStep === 0) return;
+    if (currentStep === 0 || isSubmitting) return;
     setCurrentStep((prev) => prev - 1);
   };
 
   const handleNext = () => {
-    if (!isCurrentStepValid) return;
+    if (!isCurrentStepValid || isSubmitting) return;
     if (isLastStep) return;
     setCurrentStep((prev) => prev + 1);
   };
 
   const handleSubmit = async () => {
     if (!isCurrentStepValid) return;
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+    setSubmitPhase("processing");
 
     const payload = {
       submittedAt: new Date().toISOString(),
       version: FORM_VERSION,
       answers,
+      submissionKey: `${answers.name ?? ""}__${answers.phone ?? ""}`,
     };
 
     try {
-      await fetch(ENDPOINT, {
+      const response = await fetch(ENDPOINT, {
         method: "POST",
+        headers: {
+          "Content-Type": "text/plain;charset=utf-8",
+        },
         body: JSON.stringify(payload),
       });
 
+      const rawText = await response.text();
+
+      let result: { success?: boolean; message?: string } = {};
+      try {
+        result = rawText ? JSON.parse(rawText) : {};
+      } catch {
+        result = {};
+      }
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+
+      if (typeof result.success === "boolean" && !result.success) {
+        throw new Error(result.message || "Submit failed");
+      }
+
       localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
       setSubmitted(true);
+      setSubmitPhase("done");
     } catch (error) {
       console.error("SUBMIT ERROR:", error);
+      setIsSubmitting(false);
+      setSubmitPhase("form");
       alert("제출 실패. 다시 시도해주세요.");
     }
   };
@@ -87,6 +117,8 @@ export default function PrePage() {
   const handleExit = () => {
     setEntered(false);
     setSubmitted(false);
+    setIsSubmitting(false);
+    setSubmitPhase("form");
     setCurrentStep(0);
     setAnswers({});
   };
@@ -112,40 +144,56 @@ export default function PrePage() {
             </button>
           </div>
         </section>
-      ) : submitted ? (
+      ) : submitPhase === "processing" ? (
         <section className="flex min-h-screen items-center justify-center px-6">
           <div className="w-full max-w-2xl text-center">
-  <p className="mb-4 text-[10px] tracking-[0.45em] text-white/45 sm:text-xs">
-    BAEKSA
-  </p>
+            <p className="mb-4 text-[10px] tracking-[0.45em] text-white/45 sm:text-xs">
+              BAEKSA
+            </p>
 
-  <h1 className="text-3xl font-semibold tracking-[0.18em] sm:text-5xl">
-    ENTRY ACCEPTED
-  </h1>
+            <h1 className="text-3xl font-semibold tracking-[0.18em] sm:text-5xl">
+              PROCESSING
+            </h1>
 
-  <div className="mt-6 space-y-2 text-sm tracking-[0.22em] text-white/70 sm:text-base">
-    <p>YOU ARE NOW INSIDE</p>
-    <p>DETAILS WILL BE REVEALED</p>
-  </div>
+            <div className="mt-6 space-y-2 text-sm tracking-[0.22em] text-white/70 sm:text-base">
+              <p>HOLD YOUR POSITION</p>
+              <p>SECURING YOUR ENTRY</p>
+            </div>
+          </div>
+        </section>
+      ) : submitted || submitPhase === "done" ? (
+        <section className="flex min-h-screen items-center justify-center px-6">
+          <div className="w-full max-w-2xl text-center">
+            <p className="mb-4 text-[10px] tracking-[0.45em] text-white/45 sm:text-xs">
+              BAEKSA
+            </p>
 
-  <div className="mx-auto mt-8 max-w-md rounded-2xl border border-white/12 bg-white/[0.04] px-6 py-5 text-left">
-    <p className="text-[11px] tracking-[0.25em] text-white/40">
-      FINAL NOTE
-    </p>
-    <div className="mt-3 space-y-2 text-sm text-white/75">
-      <p>입장 확정 인원에 한해 1인당 30,000원의 참가비가 적용됩니다.</p>
-      <p>세부 장소 및 최종 안내는 개별적으로 전달됩니다.</p>
-    </div>
-  </div>
+            <h1 className="text-3xl font-semibold tracking-[0.18em] sm:text-5xl">
+              ENTRY ACCEPTED
+            </h1>
 
-  <button
-    onClick={handleExit}
-    className="mt-12 border border-white/20 px-8 py-3 text-sm tracking-[0.3em] transition duration-300 hover:border-white hover:bg-white hover:text-black"
-  >
-    EXIT
-  </button>
+            <div className="mt-6 space-y-2 text-sm tracking-[0.22em] text-white/70 sm:text-base">
+              <p>YOU ARE NOW INSIDE</p>
+              <p>DETAILS WILL BE REVEALED</p>
+            </div>
 
-</div>
+            <div className="mx-auto mt-8 max-w-md rounded-2xl border border-white/12 bg-white/[0.04] px-6 py-5 text-left">
+              <p className="text-[11px] tracking-[0.25em] text-white/40">
+                FINAL NOTE
+              </p>
+              <div className="mt-3 space-y-2 text-sm text-white/75">
+                <p>입장 확정 인원에 한해 1인당 30,000원의 참가비가 적용됩니다.</p>
+                <p>세부 장소 및 최종 안내는 개별적으로 전달됩니다.</p>
+              </div>
+            </div>
+
+            <button
+              onClick={handleExit}
+              className="mt-12 border border-white/20 px-8 py-3 text-sm tracking-[0.3em] transition duration-300 hover:border-white hover:bg-white hover:text-black"
+            >
+              EXIT
+            </button>
+          </div>
         </section>
       ) : (
         <section className="flex min-h-[100dvh] items-start justify-center px-4 pb-10 pt-6 sm:px-6 sm:pt-10">
@@ -178,7 +226,7 @@ export default function PrePage() {
             <div className="mt-8 flex items-center justify-between gap-3">
               <button
                 onClick={handleBack}
-                disabled={currentStep === 0}
+                disabled={currentStep === 0 || isSubmitting}
                 className="min-w-[110px] border border-white/15 px-5 py-3 text-sm tracking-[0.24em] text-white transition duration-300 disabled:cursor-not-allowed disabled:opacity-30"
               >
                 BACK
@@ -187,15 +235,15 @@ export default function PrePage() {
               {isLastStep ? (
                 <button
                   onClick={handleSubmit}
-                  disabled={!isCurrentStepValid}
+                  disabled={!isCurrentStepValid || isSubmitting}
                   className="min-w-[110px] border border-white bg-white px-5 py-3 text-sm tracking-[0.24em] text-black transition duration-300 disabled:cursor-not-allowed disabled:border-white/15 disabled:bg-white/10 disabled:text-white/35"
                 >
-                  FINISH
+                  {isSubmitting ? "PROCESSING..." : "FINISH"}
                 </button>
               ) : (
                 <button
                   onClick={handleNext}
-                  disabled={!isCurrentStepValid}
+                  disabled={!isCurrentStepValid || isSubmitting}
                   className="min-w-[110px] border border-white bg-white px-5 py-3 text-sm tracking-[0.24em] text-black transition duration-300 disabled:cursor-not-allowed disabled:border-white/15 disabled:bg-white/10 disabled:text-white/35"
                 >
                   NEXT
